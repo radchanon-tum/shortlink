@@ -10,7 +10,7 @@ let db = {};
 if (fs.existsSync(DB_FILE)) db = JSON.parse(fs.readFileSync(DB_FILE));
 
 // 🔑 ค่าคงที่ API Key
-const API_KEY = "@P@ssw0rd@99@";
+const API_KEY = process.env.API_KEY;
 // 🔗 URL ที่จะ redirect ถ้าไม่พบ alias
 const FALLBACK_URL = "https://s.shopee.co.th/9KZWiWDPrr";
 
