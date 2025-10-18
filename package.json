@@ -1,18 +1,28 @@
 {
   "name": "shortlink",
   "version": "1.0.0",
-  "description": "",
+  "description": "Simple custom URL shortener with visit statistics and 404 display",
+  "type": "module",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "body-parser": "^1.20.3"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/radchanon-tum/shortlink.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "url-shortener",
+    "express",
+    "redirect",
+    "nodejs",
+    "custom-alias"
+  ],
+  "author": "Radchanon T.",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/radchanon-tum/shortlink/issues"
