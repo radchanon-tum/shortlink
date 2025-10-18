@@ -1,7 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
 import fs from "fs";
-import path from "path";
 
 const app = express();
 app.use(bodyParser.json());
@@ -10,8 +9,20 @@ const DB_FILE = "./db.json";
 let db = {};
 if (fs.existsSync(DB_FILE)) db = JSON.parse(fs.readFileSync(DB_FILE));
 
+// 🔑 กำหนด API Key ที่ต้องใช้
+const API_KEY = "@P@ssw0rd@99@";
+
 // ========== สร้าง Short URL ==========
 app.post("/create", (req, res) => {
+  const clientKey = req.headers["x-api-key"];
+
+  // ตรวจสอบ Header x-api-key
+  if (clientKey !== API_KEY) {
+    return res.status(401).json({
+      error: "Unauthorized: invalid or missing x-api-key",
+    });
+  }
+
   const { alias, url } = req.body;
 
   if (!alias || !url)
@@ -23,13 +34,14 @@ app.post("/create", (req, res) => {
   db[alias] = {
     url,
     count: 0,
-    lastVisit: null
+    lastVisit: null,
   };
 
   fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
+
   res.json({
     message: "สร้างเรียบร้อย",
-    shortUrl: `${req.protocol}://${req.get("host")}/${alias}`
+    shortUrl: `${req.protocol}://${req.get("host")}/${alias}`,
   });
 });
 
@@ -39,7 +51,6 @@ app.get("/:alias", (req, res) => {
   const record = db[alias];
 
   if (!record) {
-    // ถ้าไม่พบ alias ให้แสดงหน้า HTML พร้อมรหัสนั้น
     return res.status(404).send(`
       <html>
         <head><title>ไม่พบลิงก์</title></head>
@@ -51,7 +62,6 @@ app.get("/:alias", (req, res) => {
     `);
   }
 
-  // อัปเดตสถิติ
   record.count += 1;
   record.lastVisit = new Date().toISOString();
   fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
